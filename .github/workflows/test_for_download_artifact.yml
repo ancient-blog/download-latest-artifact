@@ -13,7 +13,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: download latest artifact
-        uses: ancient-blog/download-latest-artifact@topic/#20
+        uses: ancient-blog/download-latest-artifact@topic/#1
         with:
           owner: ancient-blog
           repo: hugo.github.io
