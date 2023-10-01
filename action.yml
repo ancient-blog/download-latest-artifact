@@ -60,7 +60,7 @@ runs:
           archive_download_url=$(cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq  -r 'sort_by(.created_at) | reverse | .[0].archive_download_url')
           echo ${archive_download_url}
         fi
-        
+
         # Check if there are no matching artifacts for the specified name.
         # If no matching artifacts are found, print an error message and exit.
         if [ -z "$archive_download_url" ]; then
@@ -70,6 +70,7 @@ runs:
 
     - name: Download GitHub Artifact
       shell: bash
+      run: |
         curl -L \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ inputs.token }}" \
