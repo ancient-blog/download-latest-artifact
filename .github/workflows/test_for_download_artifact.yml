@@ -31,5 +31,3 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -l
         working-directory: ${{ github.workspace }}/artifact/
-
-
