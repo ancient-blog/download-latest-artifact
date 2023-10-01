@@ -57,7 +57,7 @@ runs:
           # This section uses jq to filter, sort, and extract the desired data.
           cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq 'sort_by(.created_at) | reverse' | jq -r 'map(.name, .archive_download_url, .created_at)'| head -n5
           # Get the archive_download_url of the latest artifact.
-          archive_download_url=$(cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq  -r 'sort_by(.created_at) | reverse | .[0].archive_download_url')
+          export archive_download_url=$(cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq  -r 'sort_by(.created_at) | reverse | .[0].archive_download_url')
           echo ${archive_download_url}
         fi
 
