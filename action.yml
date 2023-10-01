@@ -44,13 +44,14 @@ runs:
           https://api.github.com/repos/${{ inputs.owner }}/${{ inputs.repo }}/actions/artifacts \
           -o artifacts.json
         # GitHub APIからarchive_download_urlを取得し、日付でソートして最新のアーティファクトを取得
-        cat artifacts.json
-        if [ -f "artifacts.json" ]; then
+        if [[ $(jq -r '.message' artifacts.json) == 'Bad credentials' ]]; then
+          echo "Credentials are bad"
+          exit 1
+        else
+          cat artifacts.json
           cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq 'sort_by(.created_at) | reverse' | jq -r 'map(.name, .archive_download_url, .created_at)'| head -n5
           archive_download_url=$(cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq  -r 'sort_by(.created_at) | reverse | .[0].archive_download_url')
           echo ${archive_download_url}
-        else
-          echo "artifacts.json does not exist, skipping operation."
         fi
         if [ -z "$archive_download_url" ]; then
           echo "No matching artifacts found for ${{ inputs.name }}"
@@ -62,7 +63,6 @@ runs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           ${archive_download_url} \
           -o artifacts.zip
-      continue-on-error: true  # 初回で成果物がない場合エラーを許可します
     - name: Unzip Artifact
       shell: bash
       run: |
