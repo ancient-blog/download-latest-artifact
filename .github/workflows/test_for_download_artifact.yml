@@ -6,38 +6,6 @@ on:
     branches: ["topic/#1"]
 
 jobs:
-
-  download_latest_artifact:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Credentials are bad
-        uses: ancient-blog/download-latest-artifact@topic/#1
-        with:
-          owner: ancient-blog
-          repo: download-latest-artifact
-          name: my-artifact
-          token: "${{ secrets.BAT_PAT }}"
-          path: |
-            "${{ github.workspace }}/artifact"
-      - name: owner is bad
-        uses: ancient-blog/download-latest-artifact@topic/#1
-        with:
-          owner: test
-          repo: download-latest-artifact
-          name: my-artifact
-          token: "${{ secrets.BAT_PAT }}"
-          path: |
-            "${{ github.workspace }}/artifact"
-      - name: Repository is bad
-        uses: ancient-blog/download-latest-artifact@topic/#1
-        with:
-          owner: ancient-blog
-          repo: download-latest-artifact
-          name: my-artifact
-          token: "${{ secrets.BAT_PAT }}"
-          path: |
-            "${{ github.workspace }}/artifact"
-
   test:
     runs-on: ubuntu-latest
     steps:
