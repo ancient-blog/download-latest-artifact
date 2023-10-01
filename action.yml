@@ -50,15 +50,13 @@ runs:
           echo "Credentials are bad"
           exit 1
         else
-          # Print the contents of the artifacts.json file for reference.
-          cat artifacts.json
-
           # Extract and display the latest artifact's information, sorted by creation date.
           # This section uses jq to filter, sort, and extract the desired data.
           cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq 'sort_by(.created_at) | reverse' | jq -r 'map(.name, .archive_download_url, .created_at)'| head -n5
           # Get the archive_download_url of the latest artifact.
-          export archive_download_url=$(cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq  -r 'sort_by(.created_at) | reverse | .[0].archive_download_url')
+          archive_download_url=$(cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq  -r 'sort_by(.created_at) | reverse | .[0].archive_download_url')
           echo ${archive_download_url}
+          echo "archive_download_url=${archive_download_url}" >> "$GITHUB_ENV"
         fi
 
         # Check if there are no matching artifacts for the specified name.
@@ -71,6 +69,7 @@ runs:
     - name: Download GitHub Artifact
       shell: bash
       run: |
+        echo ${archive_download_url}
         curl -L \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ inputs.token }}" \
