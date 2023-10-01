@@ -1,0 +1,33 @@
+name: Test 
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["topic/#1"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4 
+      - run: |
+          echo hello > test.txt
+          cat test.txt
+      - name: upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: test.txt
+      - name: download latest artifact
+        uses: ancient-blog/download-latest-artifact@topic/#1
+        with:
+          owner: ancient-blog
+          repo: download-latest-artifact
+          name: my-artifact
+          token: "${{ secrets.ANCIENT_BLOG_PAT }}"
+          path: |
+            "${{ github.workspace }}/artifact"
+      - name: Display structure of downloaded files
+        run: ls -l
+        working-directory: ${{ github.workspace }}/artifact/
