@@ -44,6 +44,7 @@ runs:
           https://api.github.com/repos/${{ inputs.owner }}/${{ inputs.repo }}/actions/artifacts \
           -o artifacts.json
         # GitHub APIからarchive_download_urlを取得し、日付でソートして最新のアーティファクトを取得
+        cat artifacts.json
         if [ -f "artifacts.json" ]; then
           cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq 'sort_by(.created_at) | reverse' | jq -r 'map(.name, .archive_download_url, .created_at)'| head -n5
           archive_download_url=$(cat artifacts.json | jq '[.artifacts[] | select(.name == "'"${{ inputs.name }}"'")]' | jq  -r 'sort_by(.created_at) | reverse | .[0].archive_download_url')
